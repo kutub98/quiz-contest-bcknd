@@ -29,6 +29,14 @@ const findBannerById = catchAsync(async (req, res) => {
 
 const getAllBanners = catchAsync(async (req, res) => {
   const result = await BannerService.getAllBanners();
+
+  // sendResponse(res, {
+  //   statusCode: httpStatus.OK,
+  //   success: true,
+  //   message: 'Banner are retrieved successfully',
+  //   meta: result.meta,
+  //   data: result.data,
+  // });
   sendResponse(res, {
     statusCode: httpStatus.OK,
     success: true,
@@ -57,7 +65,7 @@ const deleteBannerById = catchAsync(async (req, res) => {
   sendResponse(res, {
     statusCode: httpStatus.OK,
     success: true,
-    message: "Banner deleted Successfully",
+    message: 'Banner is deleted successfully',
     data: result && null,
   });
 });
