@@ -16,13 +16,14 @@ app.use(express.json());
 app.use(cors({ origin: '*' }));
 
 // application routes
-app.use('/api/v1', router);
 
 app.get('/', (req, res) => {
   res.status(200).json({
     message: 'Welcome to the Hafejia travel and Tours',
   });
 });
+
+app.use('/api/v1', router);
 
 app.use(globalErrorHandler);
 

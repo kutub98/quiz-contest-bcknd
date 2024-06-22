@@ -5,9 +5,12 @@ import config from './app/config';
 
 let server: Server;
 
-async function main() {
+function main() {
   try {
-    await mongoose.connect(config.database_url as string);
+    // mongoose.connect(
+    //   'mongodb+srv://Hafejia-Travel-Tours:3zzwkF4c39lL3Mpp@cluster0.mlxcjcs.mongodb.net/Hafejia-Travel-Tours?retryWrites=true&w=majority&appName=Cluster0',
+    // );
+    mongoose.connect(config.database_url as string);
 
     server = app.listen(config.port, () => {
       console.log(`app is listening on port ${config.port}`);
