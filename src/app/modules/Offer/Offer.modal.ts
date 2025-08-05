@@ -6,16 +6,16 @@ const OfferSchema: Schema<IOffer> = new mongoose.Schema({
     type: String,
     required: true,
   },
-  OfferName: {
-    type: String,
+  amount: {
+    type: Number,
     required: true,
   },
-  OfferDetails: {
-    type: String,
+  dailyGift: {
+    type: Number,
     required: true,
   },
-  OfferInfo: {
-    type: [String],
+  dayLength: {
+    type: Number,
     required: true,
   },
   status: {

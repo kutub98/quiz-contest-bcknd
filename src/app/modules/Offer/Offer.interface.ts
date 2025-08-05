@@ -1,7 +1,8 @@
+
 export interface IOffer {
-  OfferName: string;
-  OfferDetails: string;
-  OfferInfo: [string];
   img: string;
+  amount: number;
+  dailyGift: number;
+  dayLength: number;
   status?: 'pending' | 'delete' | 'approved';
 }

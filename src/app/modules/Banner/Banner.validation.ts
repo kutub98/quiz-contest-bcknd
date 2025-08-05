@@ -1,27 +1,29 @@
 import { z } from 'zod';
 
+// Matches your IBanner model
 export const createBannerValidationSchema = z.object({
   body: z.array(
     z.object({
-      img: z.string(),
-      BannerName: z.string().optional(),
-      BannerDetailse: z.string(),
-      status: z.enum(['approved', 'delete', 'pending']).optional(),
-    })
+      title: z.string(),
+      description: z.string(),
+      image: z.string().url(),
+      buttonText: z.string(),
+      status: z.enum(['approved', 'pending', 'delete']).optional(),
+    }),
   ),
 });
 
-
 export const updateBannerValidationSchema = z.object({
   body: z.object({
-    img: z.string().optional(),
-    BannerName: z.string().optional(),
-    BannerDetailse: z.string().optional(),
-    status: z.enum(['approved', 'delete',  'pending']).optional(),
+    title: z.string().optional(),
+    description: z.string().optional(),
+    image: z.string().url().optional(),
+    buttonText: z.string().optional(),
+    status: z.enum(['approved', 'pending', 'delete']).optional(),
   }),
 });
 
-export const ServiceValidations = {
+export const BannerValidations = {
   createBannerValidationSchema,
   updateBannerValidationSchema,
 };

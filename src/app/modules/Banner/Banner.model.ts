@@ -1,27 +1,33 @@
-// models/Service.ts
-import mongoose, { Schema } from 'mongoose';
-import { IBanner } from './Banner.interface';
+import { Schema, model } from 'mongoose';
+import type { IBanner } from './Banner.interface';
 
-const bannerSchema: Schema<IBanner> = new mongoose.Schema({
-  img: {
-    type: String,
-    required: true,
+const BannerSchema = new Schema<IBanner>(
+  {
+    title: {
+      type: String,
+      required: true,
+    },
+    description: {
+      type: String,
+      required: true,
+    },
+    image: {
+      type: String,
+      required: true,
+    },
+    buttonText: {
+      type: String,
+      required: true,
+    },
+    status: {
+      type: String,
+      enum: ['approved', 'pending', 'delete'],
+      default: 'approved',
+    },
   },
-  BannerName: {
-    type: String,
-    required: true,
+  {
+    timestamps: true,
   },
+);
 
-  BannerDetailse: {
-    type: String,
-    required: true,
-  },
-  status: {
-    type: String,
-    enum: ['approved', 'delete', 'pending'],
-    default: 'pending',
-  },
-});
-
-export const Banner = mongoose.model<IBanner>('Banner', bannerSchema);
-
+export const Banner = model<IBanner>('Banner', BannerSchema);

@@ -8,12 +8,16 @@ const router = express.Router();
 
 router.post(
   '/',
-  validateRequest(OfferValidation.createServiceValidationSchema),
+  validateRequest(OfferValidation.createOfferValidationSchema),
   OfferController.createOffer,
 );
 router.get('/', OfferController.getAllOffers);
 router.get('/:id', OfferController.findeOfferById);
-router.patch('/:id', OfferController.updateOfferById);
+router.patch(
+  '/:id',
+  validateRequest(OfferValidation?.updateOfferValidationSchema),
+  OfferController.updateOfferById,
+);
 router.delete('/:id', OfferController.deleteOfferById);
 
 export const OfferRouter = router;

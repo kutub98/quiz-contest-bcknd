@@ -7,9 +7,7 @@ let server: Server;
 
 function main() {
   try {
-    // mongoose.connect(
-    //   'mongodb+srv://Hafejia-Travel-Tours:3zzwkF4c39lL3Mpp@cluster0.mlxcjcs.mongodb.net/Hafejia-Travel-Tours?retryWrites=true&w=majority&appName=Cluster0',
-    // );
+    
     mongoose.connect(config.database_url as string);
 
     server = app.listen(config.port, () => {

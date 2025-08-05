@@ -19,7 +19,7 @@ app.use(cors({ origin: '*' }));
 
 app.get('/', (req, res) => {
   res.status(200).json({
-    message: 'Welcome to the Hafejia travel and Tours',
+    message: 'Quiz Contest',
   });
 });
 
