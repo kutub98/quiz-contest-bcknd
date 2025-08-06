@@ -14,7 +14,7 @@ export interface Rules {
   items: string[];
 }
 
-export interface QuizData {
+export interface IQuizData {
   quizInfo: QuizInfo;
   competitionDetails: CompetitionDetails;
   rules: Rules;
