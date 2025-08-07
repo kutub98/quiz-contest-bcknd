@@ -26,7 +26,7 @@ const moduleRoutes: TModuleRoutes[] = [
   },
 
   {
-    path: '/quizData',
+    path: '/quiz-data',
     route: QuizDataRouter,
   },
 
