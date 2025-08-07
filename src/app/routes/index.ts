@@ -6,6 +6,7 @@ import { OfferRouter } from '../modules/Offer/Package.route';
 import { QuizDataRouter } from '../modules/quizData/quizData.route';
 import { JudgesRouter } from '../modules/judgePannel/judge.route';
 import { TimeInstructionRouter } from '../modules/timeInstruction/timeInstruction.route';
+import { FaQRouter } from '../modules/FqA/faq.route';
 
 type TModuleRoutes = {
   path: string;
@@ -40,6 +41,10 @@ const moduleRoutes: TModuleRoutes[] = [
   {
     path: '/time-instruction',
     route: TimeInstructionRouter,
+  },
+  {
+    path: '/faq',
+    route: FaQRouter,
   },
 ];
 
