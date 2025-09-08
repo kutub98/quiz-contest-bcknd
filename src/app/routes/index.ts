@@ -7,6 +7,8 @@ import { QuizDataRouter } from '../modules/quizData/quizData.route';
 import { JudgesRouter } from '../modules/judgePannel/judge.route';
 import { TimeInstructionRouter } from '../modules/timeInstruction/timeInstruction.route';
 import { FaQRouter } from '../modules/FqA/faq.route';
+import { EventRouter } from '../modules/events/event.route';
+import { QuestionRoutes } from '../modules/questions/questions.route';
 
 type TModuleRoutes = {
   path: string;
@@ -45,6 +47,14 @@ const moduleRoutes: TModuleRoutes[] = [
   {
     path: '/faq',
     route: FaQRouter,
+  },
+  {
+    path: '/events',
+    route: EventRouter,
+  },
+  {
+    path: '/questions',
+    route: QuestionRoutes,
   },
 ];
 
