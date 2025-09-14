@@ -1,41 +1,33 @@
 import { Request, Response } from 'express';
-import { QuestionService } from './questions.service';
+import { Question } from './questions.model';
 
-
-export class QuestionController {
-  static async create(req: Request, res: Response) {
-    try {
-      const { eventId } = req.params;
-      const question = await QuestionService.createQuestion(eventId, req.body);
-
-      return res.status(201).json({
-        success: true,
-        message: 'Question uploaded successfully',
-        data: question,
-      });
-    } catch (err: any) {
-      return res.status(400).json({
-        success: false,
-        message: err.message || 'Error uploading question',
-      });
-    }
+export const createQuestion = async (req: Request, res: Response) => {
+  try {
+    const question = await Question.create(req.body);
+    res.status(201).json({ success: true, data: question });
+  } catch (error: any) {
+    res.status(400).json({ success: false, message: error.message });
   }
+};
 
-  static async list(req: Request, res: Response) {
-    try {
-      const { eventId } = req.params;
-      const questions = await QuestionService.getQuestions(eventId);
-
-      return res.status(200).json({
-        success: true,
-        message: 'Questions fetched successfully',
-        data: questions,
-      });
-    } catch (err: any) {
-      return res.status(400).json({
-        success: false,
-        message: err.message || 'Error fetching questions',
-      });
-    }
+export const getQuestions = async (req: Request, res: Response) => {
+  try {
+    const questions = await Question.find().populate('quizId');
+    res.json({ success: true, data: questions });
+  } catch (error: any) {
+    res.status(500).json({ success: false, message: error.message });
   }
-}
+};
+
+export const getQuestionById = async (req: Request, res: Response) => {
+  try {
+    const question = await Question.findById(req.params.id).populate('quizId');
+    if (!question)
+      return res
+        .status(404)
+        .json({ success: false, message: 'Question not found' });
+    res.json({ success: true, data: question });
+  } catch (error: any) {
+    res.status(500).json({ success: false, message: error.message });
+  }
+};

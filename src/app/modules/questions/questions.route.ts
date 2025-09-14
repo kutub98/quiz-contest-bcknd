@@ -1,16 +1,14 @@
 import { Router } from 'express';
-import validateRequest from '../../middlewares/validateRequest';
-import { createQuestionSchema } from './questions.validation';
-import { QuestionController } from './questions.controller';
+import {
+  createQuestion,
+  getQuestionById,
+  getQuestions,
+} from './questions.controller';
 
-const router = Router();
+const QuestionRouter = Router();
 
-router.post(
-  '/:eventId/questions',
-  validateRequest(createQuestionSchema),
-  QuestionController.create,
-);
+QuestionRouter.post('/', createQuestion);
+QuestionRouter.get('/', getQuestions);
+QuestionRouter.get('/:id', getQuestionById);
 
-router.get('/:eventId/questions', QuestionController.list);
-
-export const QuestionRoutes = router;
+export { QuestionRouter };

@@ -1,23 +1,20 @@
-import { Router } from 'express';
+import { Router } from "express";
+import { createEvent, getEvents, getEventById } from "./event.controller";
+import { getActiveEvents, registerForEvent, getRegisteredEvents, getEventQuizzesForStudent, getStudentEventResults } from "./event.participation.controller";
+import { authenticate } from "../../middleware/auth.middleware";
 
-import validateRequest from '../../middlewares/validateRequest';
-import { updateEventSchema } from './event.validation';
-import { EventController } from './event.controller';
+const EventRouter = Router();
 
-const router = Router();
 
-router.post(
-  '/',
-  validateRequest(updateEventSchema),
-  EventController.createEvent,
-);
-router.put(
-  '/:id',
-  validateRequest(updateEventSchema),
-  EventController.updateEventById,
-);
-router.get('/', EventController.getAllEvents);
-router.get('/:id', EventController.findEventById);
-router.delete('/:id', EventController.deleteEventById);
+EventRouter.post("/", authenticate, createEvent);     
+EventRouter.get("/", authenticate, getEvents);         
+EventRouter.get("/:id", authenticate, getEventById);  
 
-export const EventRouter = router;
+
+EventRouter.get("/active", getActiveEvents);  
+EventRouter.post("/:eventId/register", authenticate, registerForEvent);  
+EventRouter.get("/registered", authenticate, getRegisteredEvents);  
+EventRouter.get("/:eventId/quizzes", authenticate, getEventQuizzesForStudent);  
+EventRouter.get("/:eventId/results", authenticate, getStudentEventResults);  
+
+export { EventRouter };

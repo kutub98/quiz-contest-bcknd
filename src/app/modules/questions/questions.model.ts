@@ -1,25 +1,30 @@
-import { Schema, model } from 'mongoose';
-import type { IQuestion } from './questions.interface';
+import mongoose, { Schema } from "mongoose";
 
+export interface IQuestion extends Document {
+  quizId: mongoose.Types.ObjectId;
+  text: string;
+  options: string[];
+  correctAnswer: string;
+  marks: number;
+  explanation?: string;
+  difficulty: 'easy' | 'medium' | 'hard';
+}
 
 const QuestionSchema = new Schema<IQuestion>(
   {
-    event: {
-      type: Schema.Types.ObjectId,
-      ref: 'Event',
-      required: true,
+    quizId: { type: Schema.Types.ObjectId, ref: "Quiz", required: true },
+    text: { type: String, required: true },
+    options: [{ type: String, required: true }],
+    correctAnswer: { type: String, required: true },
+    marks: { type: Number, default: 1, min: 1 },
+    explanation: { type: String },
+    difficulty: { 
+      type: String, 
+      enum: ['easy', 'medium', 'hard'],
+      default: 'medium'
     },
-    title: { type: String, required: true },
-    type: {
-      type: String,
-      enum: ['mcq', 'short', 'written'],
-      required: true,
-    },
-    options: { type: [String], default: [] },
-    answer: { type: String, required: true },
-    marks: { type: Number, required: true },
   },
-  { timestamps: true },
+  { timestamps: true }
 );
 
-export const Question = model<IQuestion>('Question', QuestionSchema);
+export const Question = mongoose.model<IQuestion>("Question", QuestionSchema);
