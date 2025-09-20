@@ -1,8 +1,9 @@
 import { Router } from "express";
-import {
-  createParticipation,
-  getParticipations,
+import { 
+  createParticipation, 
+  getParticipations, 
   getParticipationById,
+  checkParticipation
 } from "./participation.controller";
 
 const ParticipationRouter = Router();
@@ -10,5 +11,6 @@ const ParticipationRouter = Router();
 ParticipationRouter.post("/", createParticipation);
 ParticipationRouter.get("/", getParticipations);
 ParticipationRouter.get("/:id", getParticipationById);
+ParticipationRouter.post("/check", checkParticipation);
 
 export { ParticipationRouter };
