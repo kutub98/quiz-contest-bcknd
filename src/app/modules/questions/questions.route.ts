@@ -9,6 +9,7 @@ import {
   getQuestionsByType,
   updateQuestionWithImages,
   bulkCreateQuestions,
+  bulkDeleteQuestions,
 } from './questions.controller';
 import { questionImageUpload } from '../../config/questionUpload';
 
@@ -17,6 +18,7 @@ const QuestionRouter = Router();
 // Basic CRUD operations
 QuestionRouter.post('/', createQuestion);
 QuestionRouter.post('/bulk', bulkCreateQuestions);
+QuestionRouter.delete('/bulk', bulkDeleteQuestions);
 QuestionRouter.get('/', getQuestions);
 QuestionRouter.get('/:id', getQuestionById);
 QuestionRouter.get('/quiz/:quizId', getQuestionsByQuizId);

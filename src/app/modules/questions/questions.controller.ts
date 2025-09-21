@@ -345,3 +345,52 @@ export const bulkCreateQuestions = async (req: Request, res: Response) => {
     });
   }
 };
+
+// Bulk delete questions
+export const bulkDeleteQuestions = async (req: Request, res: Response) => {
+  try {
+    const { questionIds } = req.body;
+
+    if (
+      !questionIds ||
+      !Array.isArray(questionIds) ||
+      questionIds.length === 0
+    ) {
+      return res.status(400).json({
+        success: false,
+        message: 'Question IDs array is required and must not be empty',
+      });
+    }
+
+    // Validate that all IDs are valid MongoDB ObjectIds
+    const validIds = questionIds.filter(
+      (id: string) => typeof id === 'string' && /^[0-9a-fA-F]{24}$/.test(id),
+    );
+
+    if (validIds.length !== questionIds.length) {
+      return res.status(400).json({
+        success: false,
+        message: 'Some question IDs are invalid',
+      });
+    }
+
+    // Delete questions
+    const result = await Question.deleteMany({
+      _id: { $in: validIds },
+    });
+
+    res.json({
+      success: true,
+      message: `${result.deletedCount} questions deleted successfully`,
+      data: {
+        deletedCount: result.deletedCount,
+        deletedIds: validIds,
+      },
+    });
+  } catch (error: any) {
+    res.status(500).json({
+      success: false,
+      message: error.message || 'Failed to delete questions',
+    });
+  }
+};
