@@ -73,6 +73,64 @@ export const getQuestionsByQuizId = async (req: Request, res: Response) => {
   }
 };
 
+// Update single question
+export const updateQuestion = async (req: Request, res: Response) => {
+  try {
+    const { id } = req.params;
+    const updateData = req.body;
+
+    const question = await Question.findByIdAndUpdate(id, updateData, {
+      new: true,
+      runValidators: true,
+    }).populate('quizId');
+
+    if (!question) {
+      return res.status(404).json({
+        success: false,
+        message: 'Question not found',
+      });
+    }
+
+    res.json({
+      success: true,
+      message: 'Question updated successfully',
+      data: question,
+    });
+  } catch (error: any) {
+    res.status(500).json({
+      success: false,
+      message: error.message || 'Failed to update question',
+    });
+  }
+};
+
+// Delete single question
+export const deleteQuestion = async (req: Request, res: Response) => {
+  try {
+    const { id } = req.params;
+
+    const question = await Question.findByIdAndDelete(id);
+
+    if (!question) {
+      return res.status(404).json({
+        success: false,
+        message: 'Question not found',
+      });
+    }
+
+    res.json({
+      success: true,
+      message: 'Question deleted successfully',
+      data: { deletedId: id },
+    });
+  } catch (error: any) {
+    res.status(500).json({
+      success: false,
+      message: error.message || 'Failed to delete question',
+    });
+  }
+};
+
 // Upload images for questions (Short and Written types)
 export const uploadQuestionImages = async (req: Request, res: Response) => {
   try {
@@ -291,14 +349,10 @@ export const bulkCreateQuestions = async (req: Request, res: Response) => {
         }
       }
 
-      // Validate Short and Written specific fields
-      if (
-        (question.questionType === 'Short' ||
-          question.questionType === 'Written') &&
-        !question.correctAnswer
-      ) {
+      // Validate Written specific fields (Short questions have optional correctAnswer)
+      if (question.questionType === 'Written' && !question.correctAnswer) {
         throw new Error(
-          `Question ${index + 1}: ${question.questionType} questions must have a correct answer`,
+          `Question ${index + 1}: Written questions must have a correct answer`,
         );
       }
 

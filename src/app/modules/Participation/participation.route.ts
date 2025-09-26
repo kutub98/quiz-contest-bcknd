@@ -7,7 +7,9 @@ import {
   updateParticipation,
   deleteParticipation,
   getParticipationsByQuiz,
+  submitParticipationAnswer,
 } from './participation.controller';
+import { questionImageUpload } from '../../config/questionUpload';
 
 const ParticipationRouter = Router();
 
@@ -18,5 +20,11 @@ ParticipationRouter.patch('/:id', updateParticipation);
 ParticipationRouter.delete('/:id', deleteParticipation);
 ParticipationRouter.get('/quiz/:quizId', getParticipationsByQuiz);
 ParticipationRouter.post('/check', checkParticipation);
+// Submit/update a single answer of a participation with optional images
+ParticipationRouter.post(
+  '/:id/submit-answer',
+  questionImageUpload.array('images', 5),
+  submitParticipationAnswer,
+);
 
 export { ParticipationRouter };

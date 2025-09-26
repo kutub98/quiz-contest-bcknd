@@ -1,5 +1,6 @@
 import { Request, Response } from 'express';
 import { Participation } from './participation.model';
+import { questionImageUpload, getFileInfo } from '../../config/questionUpload';
 import { Event } from '../events/event.model';
 
 export const createParticipation = async (req: Request, res: Response) => {
@@ -94,6 +95,70 @@ export const updateParticipation = async (req: Request, res: Response) => {
         message: 'Participation not found',
       });
     }
+
+    res.json({ success: true, data: participation });
+  } catch (error: any) {
+    res.status(500).json({ success: false, message: error.message });
+  }
+};
+
+// Submit participation answer with optional images for a specific question
+export const submitParticipationAnswer = async (
+  req: Request,
+  res: Response,
+) => {
+  try {
+    const { id } = req.params; // participation id
+    const {
+      questionId,
+      selectedOption,
+      participantAnswer,
+      isCorrect,
+      marksObtained,
+    } = req.body;
+
+    const participation = await Participation.findById(id);
+    if (!participation) {
+      return res
+        .status(404)
+        .json({ success: false, message: 'Participation not found' });
+    }
+
+    let participantImages: any[] = [];
+    if (req.files) {
+      const files = Array.isArray(req.files)
+        ? req.files
+        : Object.values(req.files).flat();
+      // @ts-ignore
+      participantImages = files.map((file) => getFileInfo(file));
+    }
+
+    const answers = participation.answers || [];
+    const idx = answers.findIndex(
+      (a: any) => a.questionId?.toString() === questionId,
+    );
+    const updated = {
+      questionId,
+      selectedOption: selectedOption || '',
+      participantAnswer: participantAnswer || '',
+      isCorrect: !!isCorrect,
+      marksObtained: Number(marksObtained) || 0,
+      participantImages,
+    } as any;
+
+    if (idx >= 0) {
+      answers[idx] = { ...(answers[idx] as any), ...updated };
+    } else {
+      answers.push(updated);
+    }
+
+    participation.answers = answers as any;
+    participation.totalScore = answers.reduce(
+      (sum: number, a: any) => sum + (a.marksObtained || 0),
+      0,
+    );
+
+    await participation.save();
 
     res.json({ success: true, data: participation });
   } catch (error: any) {

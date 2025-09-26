@@ -4,6 +4,8 @@ import {
   getQuestionById,
   getQuestions,
   getQuestionsByQuizId,
+  deleteQuestion,
+  updateQuestion,
   uploadQuestionImages,
   submitAnswer,
   getQuestionsByType,
@@ -15,16 +17,20 @@ import { questionImageUpload } from '../../config/questionUpload';
 
 const QuestionRouter = Router();
 
-// Basic CRUD operations
+// Basic CRUD operations (order matters: place specific routes before ":id")
 QuestionRouter.post('/', createQuestion);
 QuestionRouter.post('/bulk', bulkCreateQuestions);
 QuestionRouter.delete('/bulk', bulkDeleteQuestions);
 QuestionRouter.get('/', getQuestions);
-QuestionRouter.get('/:id', getQuestionById);
-QuestionRouter.get('/quiz/:quizId', getQuestionsByQuizId);
 
-// Question type specific routes
+// Specific routes first
+QuestionRouter.get('/quiz/:quizId', getQuestionsByQuizId);
 QuestionRouter.get('/type/:type', getQuestionsByType);
+
+// Generic ID routes
+QuestionRouter.get('/:id', getQuestionById);
+QuestionRouter.put('/:id', updateQuestion);
+QuestionRouter.delete('/:id', deleteQuestion);
 
 // Image upload routes
 QuestionRouter.post(

@@ -116,12 +116,18 @@ export const questionMixedUpload = multer({
 
 // Helper function to get file info for database storage
 export const getFileInfo = (file: multer.File) => {
+  // Build a web-accessible path under /uploads instead of absolute filesystem path
+  const isImage = file.mimetype.startsWith('image/');
+  const urlPath = isImage
+    ? `/uploads/question-images/${file.filename}`
+    : `/uploads/question-files/${file.filename}`;
+
   return {
     filename: file.filename,
     originalName: file.originalname,
     mimetype: file.mimetype,
     size: file.size,
-    path: file.path,
+    path: urlPath,
     uploadedAt: new Date(),
   };
 };
