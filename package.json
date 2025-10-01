@@ -1,5 +1,5 @@
 {
-  "name": "Hafejia-Travel-Tours",
+  "name": "Next Spark Quiz Contest",
   "version": "1.0.0",
   "description": "",
   "main": "./dist/server.js",
@@ -36,7 +36,7 @@
   },
   "devDependencies": {
     "@types/cors": "^2.8.17",
-    "@types/express": "^4.17.21",
+    "@types/express": "^4.17.23",
     "@types/jsonwebtoken": "^9.0.10",
     "@types/multer": "^2.0.0",
     "@types/node": "^24.3.1",

@@ -1,4 +1,4 @@
-import mongoose, { Schema, Document } from "mongoose";
+import mongoose, { Schema, Document } from 'mongoose';
 
 export interface IEvent extends Document {
   title: string;
@@ -10,6 +10,7 @@ export interface IEvent extends Document {
   isActive: boolean;
   status: 'upcoming' | 'ongoing' | 'completed';
   participants: mongoose.Types.ObjectId[];
+  updateStatus: () => Promise<IEvent>;
 }
 
 const EventSchema = new Schema<IEvent>(
@@ -18,21 +19,21 @@ const EventSchema = new Schema<IEvent>(
     description: { type: String },
     startDate: { type: Date, required: true },
     endDate: { type: Date, required: true },
-    createdBy: { type: Schema.Types.ObjectId, ref: "User", required: false },
-    quizzes: [{ type: Schema.Types.ObjectId, ref: "Quiz" }],
+    createdBy: { type: Schema.Types.ObjectId, ref: 'User', required: false },
+    quizzes: [{ type: Schema.Types.ObjectId, ref: 'Quiz' }],
     isActive: { type: Boolean, default: true },
-    status: { 
-      type: String, 
+    status: {
+      type: String,
       enum: ['upcoming', 'ongoing', 'completed'],
-      default: 'upcoming'
+      default: 'upcoming',
     },
-    participants: [{ type: Schema.Types.ObjectId, ref: "User" }], 
+    participants: [{ type: Schema.Types.ObjectId, ref: 'User' }],
   },
-  { timestamps: true }
+  { timestamps: true },
 );
 
 // Update status based on dates
-EventSchema.methods.updateStatus = function() {
+EventSchema.methods.updateStatus = function () {
   const now = new Date();
   if (now < this.startDate) this.status = 'upcoming';
   else if (now > this.endDate) this.status = 'completed';
@@ -40,4 +41,4 @@ EventSchema.methods.updateStatus = function() {
   return this.save();
 };
 
-export const Event = mongoose.model<IEvent>("Event", EventSchema);
+export const Event = mongoose.model<IEvent>('Event', EventSchema);

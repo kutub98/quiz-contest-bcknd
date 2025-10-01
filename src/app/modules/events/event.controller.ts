@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { Request, Response } from 'express';
 import mongoose from 'mongoose';
 import { Event } from './event.model';
@@ -27,25 +28,22 @@ export const getEvents = async (req: Request, res: Response) => {
 export const getEventById = async (req: Request, res: Response) => {
   try {
     const eventId = req.params.id;
-    console.log('=== GET EVENT BY ID ===');
-    console.log('Event ID:', eventId);
-    console.log('Event ID type:', typeof eventId);
+    
 
     const event = await Event.findById(eventId).populate('quizzes');
-    console.log('Event found:', !!event);
-    console.log('Event data:', event);
+   
 
     if (!event) {
-      console.log('Event not found for ID:', eventId);
+
       return res
         .status(404)
         .json({ success: false, message: 'Event not found' });
     }
 
-    console.log('Event loaded successfully');
+    
     res.json({ success: true, data: event });
   } catch (error: any) {
-    console.error('Error loading event:', error);
+
     res.status(500).json({ success: false, message: error.message });
   }
 };
@@ -82,11 +80,6 @@ export const addParticipant = async (req: Request, res: Response) => {
   try {
     const { eventId, studentId } = req.body;
 
-    console.log('=== ADD PARTICIPANT ===');
-    console.log('Event ID:', eventId);
-    console.log('Student ID:', studentId);
-    console.log('Request body:', req.body);
-
     // Validate required fields
     if (!eventId || !studentId) {
       return res.status(400).json({
@@ -97,14 +90,12 @@ export const addParticipant = async (req: Request, res: Response) => {
 
     const event = await Event.findById(eventId);
     if (!event) {
-      console.log('Event not found for ID:', eventId);
       return res
         .status(404)
         .json({ success: false, message: 'Event not found' });
     }
 
-    console.log('Event found:', event.title);
-    console.log('Current participants:', event.participants.length);
+  
 
     // Convert studentId to ObjectId for proper comparison
     const studentObjectId = new mongoose.Types.ObjectId(studentId);
@@ -120,7 +111,6 @@ export const addParticipant = async (req: Request, res: Response) => {
     });
 
     if (isAlreadyParticipant) {
-      console.log('Student is already a participant, returning success');
       // Return success even if already a participant
       const populatedEvent = await Event.findById(eventId)
         .populate('quizzes')
@@ -140,7 +130,7 @@ export const addParticipant = async (req: Request, res: Response) => {
     event.participants.push(studentObjectId);
     await event.save();
 
-    console.log('Student added successfully to event');
+
 
     // Populate and return event with participant details
     const populatedEvent = await Event.findById(eventId)
