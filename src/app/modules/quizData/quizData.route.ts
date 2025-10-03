@@ -14,17 +14,11 @@ router.post(
 );
 router.get('/', QuizDataController.getAllQuizData);
 router.get('/:id', QuizDataController.findCreateQuizDataById);
-// router.patch(
-//   '/:id',
-//   validateRequest(QuizDataValidation?.updateQuizDataValidationSchema),
-//   QuizDataController.updateQuizDataById,
-// );
 router.patch(
   '/:id',
   validateRequest(QuizDataValidation?.updateQuizDataValidationSchema),
   QuizDataController.updateQuizDataById,
 );
-
 router.delete('/:id', QuizDataController.deleteQuizDataById);
 
 export const QuizDataRouter = router;

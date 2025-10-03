@@ -1,189 +1,118 @@
 import { Request, Response } from 'express';
-import mongoose from 'mongoose';
-import { Event } from './event.model';
+import { EventService } from './event.service';
+import httpStatus from 'http-status';
 
-// Create Event
+import { createEventSchema, updateEventSchema } from './event.validation';
+import sendResponse from '../../utils/sendResponse';
+
 export const createEvent = async (req: Request, res: Response) => {
   try {
-    const event = await Event.create(req.body);
-    await event.updateStatus();
-    res.status(201).json({ success: true, data: event });
+    const parsed = createEventSchema.parse(req); 
+    const event = await EventService.createEvent(parsed.body);
+
+    sendResponse(res, {
+      statusCode: httpStatus.CREATED,
+      success: true,
+      message: 'Event created successfully',
+      data: event,
+    });
   } catch (error: any) {
-    res.status(400).json({ success: false, message: error.message });
+    res.status(httpStatus.BAD_REQUEST).json({
+      success: false,
+      error: error.errors ?? error.message,
+    });
   }
 };
 
-// Get all Events
-export const getEvents = async (req: Request, res: Response) => {
-  try {
-    const events = await Event.find().populate('quizzes');
-    res.json({ success: true, data: events });
-  } catch (error: any) {
-    res.status(500).json({ success: false, message: error.message });
-  }
-};
-
-// Get single Event
-export const getEventById = async (req: Request, res: Response) => {
-  try {
-    const eventId = req.params.id;
-    console.log('=== GET EVENT BY ID ===');
-    console.log('Event ID:', eventId);
-    console.log('Event ID type:', typeof eventId);
-
-    const event = await Event.findById(eventId).populate('quizzes');
-    console.log('Event found:', !!event);
-    console.log('Event data:', event);
-
-    if (!event) {
-      console.log('Event not found for ID:', eventId);
-      return res
-        .status(404)
-        .json({ success: false, message: 'Event not found' });
-    }
-
-    console.log('Event loaded successfully');
-    res.json({ success: true, data: event });
-  } catch (error: any) {
-    console.error('Error loading event:', error);
-    res.status(500).json({ success: false, message: error.message });
-  }
-};
-
-// Update Event
 export const updateEvent = async (req: Request, res: Response) => {
   try {
-    const event = await Event.findById(req.params.id);
+    const parsed = updateEventSchema.parse(req);
+    const event = await EventService.updateEventById(req.params.id, parsed.body);
     if (!event)
       return res
-        .status(404)
+        .status(httpStatus.NOT_FOUND)
         .json({ success: false, message: 'Event not found' });
 
-    Object.assign(event, req.body);
-    if (typeof event.updateStatus === 'function') {
-      await event.updateStatus();
-    }
-    await event.save();
-
-    res.json({ success: true, data: event });
-  } catch (error: unknown) {
-    if (error instanceof Error) {
-      res.status(400).json({ success: false, message: error.message });
-    } else {
-      res
-        .status(400)
-        .json({ success: false, message: 'An unknown error occurred' });
-    }
-  }
-};
-
-// Add participant to event
-export const addParticipant = async (req: Request, res: Response) => {
-  try {
-    const { eventId, studentId } = req.body;
-
-    console.log('=== ADD PARTICIPANT ===');
-    console.log('Event ID:', eventId);
-    console.log('Student ID:', studentId);
-    console.log('Request body:', req.body);
-
-    // Validate required fields
-    if (!eventId || !studentId) {
-      return res.status(400).json({
-        success: false,
-        message: 'Event ID and Student ID are required',
-      });
-    }
-
-    const event = await Event.findById(eventId);
-    if (!event) {
-      console.log('Event not found for ID:', eventId);
-      return res
-        .status(404)
-        .json({ success: false, message: 'Event not found' });
-    }
-
-    console.log('Event found:', event.title);
-    console.log('Current participants:', event.participants.length);
-
-    // Convert studentId to ObjectId for proper comparison
-    const studentObjectId = new mongoose.Types.ObjectId(studentId);
-
-    // Check if student is already a participant using ObjectId comparison
-    const isAlreadyParticipant = event.participants.some((participantId) => {
-      return (
-        participantId.toString() === studentObjectId.toString() ||
-        (participantId &&
-          participantId.equals &&
-          participantId.equals(studentObjectId))
-      );
+    sendResponse(res, {
+      statusCode: httpStatus.OK,
+      success: true,
+      message: 'Event updated successfully',
+      data: event,
     });
-
-    if (isAlreadyParticipant) {
-      console.log('Student is already a participant, returning success');
-      // Return success even if already a participant
-      const populatedEvent = await Event.findById(eventId)
-        .populate('quizzes')
-        .populate(
-          'participants',
-          'fullNameEnglish fullNameBangla contact role',
-        );
-
-      return res.json({
-        success: true,
-        data: populatedEvent,
-        message: 'Student is already a participant',
-      });
-    }
-
-    // Add student to participants array
-    event.participants.push(studentObjectId);
-    await event.save();
-
-    console.log('Student added successfully to event');
-
-    // Populate and return event with participant details
-    const populatedEvent = await Event.findById(eventId)
-      .populate('quizzes')
-      .populate('participants', 'fullNameEnglish fullNameBangla contact role');
-
-    res.json({ success: true, data: populatedEvent });
   } catch (error: any) {
-    res.status(500).json({ success: false, message: error.message });
+    res.status(httpStatus.BAD_REQUEST).json({
+      success: false,
+      error: error.errors ?? error.message,
+    });
   }
 };
-
-// Get event with participants
-export const getEventWithParticipants = async (req: Request, res: Response) => {
+export const getAllEvents = async (req: Request, res: Response) => {
   try {
-    const event = await Event.findById(req.params.id)
-      .populate('quizzes')
-      .populate('participants', 'fullNameEnglish fullNameBangla contact role');
+    const events = await EventService.getAllEvents();
 
-    if (!event) {
-      return res
-        .status(404)
-        .json({ success: false, message: 'Event not found' });
-    }
-
-    res.json({ success: true, data: event });
+    sendResponse(res, {
+      statusCode: httpStatus.OK,
+      success: true,
+      message: 'Events retrieved successfully',
+      data: events,
+    });
   } catch (error: any) {
-    res.status(500).json({ success: false, message: error.message });
+    res.status(httpStatus.BAD_REQUEST).json({
+      success: false,
+      error: error.errors ?? error.message,
+    });
   }
 };
 
-// Delete Event
+export const getEventById = async (req: Request, res: Response) => {
+  try {
+    const event = await EventService.findEventById(req.params.id);
+    if (!event)
+      return res
+        .status(httpStatus.NOT_FOUND)
+        .json({ success: false, message: 'Event not found' });
+
+    sendResponse(res, {
+      statusCode: httpStatus.OK,
+      success: true,
+      message: 'Event retrieved successfully',
+      data: event,
+    });
+  } catch (error: any) {
+    res.status(httpStatus.BAD_REQUEST).json({
+      success: false,
+      error: error.errors ?? error.message,
+    });
+  }
+};
+
+
 export const deleteEvent = async (req: Request, res: Response) => {
   try {
-    const event = await Event.findById(req.params.id);
+    const event = await EventService.deleteEventById(req.params.id);
     if (!event)
       return res
-        .status(404)
+        .status(httpStatus.NOT_FOUND)
         .json({ success: false, message: 'Event not found' });
 
-    await event.deleteOne();
-    res.json({ success: true, message: 'Event deleted successfully' });
+    sendResponse(res, {
+      statusCode: httpStatus.OK,
+      success: true,
+      message: 'Event deleted successfully',
+      data: null,
+    });
   } catch (error: any) {
-    res.status(500).json({ success: false, message: error.message });
+    res.status(httpStatus.BAD_REQUEST).json({
+      success: false,
+      error: error.errors ?? error.message,
+    });
   }
 };
+
+export class EventController {
+  static createEvent = createEvent;
+  static updateEventById = updateEvent;
+  static getAllEvents = getAllEvents;
+  static findEventById = getEventById;
+  static deleteEventById = deleteEvent;
+}

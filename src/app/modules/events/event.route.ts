@@ -1,22 +1,23 @@
 import { Router } from 'express';
-import {
-  createEvent,
-  getEvents,
-  getEventById,
-  updateEvent,
-  deleteEvent,
-  addParticipant,
-  getEventWithParticipants,
-} from './event.controller';
 
-const EventRouter = Router();
+import validateRequest from '../../middlewares/validateRequest';
+import { updateEventSchema } from './event.validation';
+import { EventController } from './event.controller';
 
-EventRouter.post('/', createEvent);
-EventRouter.get('/', getEvents);
-EventRouter.get('/:id', getEventById);
-EventRouter.get('/:id/participants', getEventWithParticipants);
-EventRouter.post('/add-participant', addParticipant);
-EventRouter.patch('/:id', updateEvent);
-EventRouter.delete('/:id', deleteEvent);
+const router = Router();
 
-export { EventRouter };
+router.post(
+  '/',
+  validateRequest(updateEventSchema),
+  EventController.createEvent,
+);
+router.put(
+  '/:id',
+  validateRequest(updateEventSchema),
+  EventController.updateEventById,
+);
+router.get('/', EventController.getAllEvents);
+router.get('/:id', EventController.findEventById);
+router.delete('/:id', EventController.deleteEventById);
+
+export const EventRouter = router;

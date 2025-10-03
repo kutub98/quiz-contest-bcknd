@@ -7,7 +7,6 @@ import express, { Application } from 'express';
 import globalErrorHandler from './app/middlewares/globalErrorhandler';
 import notFound from './app/middlewares/notFound';
 import router from './app/routes';
-import path from 'path';
 
 const app: Application = express();
 
@@ -25,8 +24,6 @@ app.get('/', (req, res) => {
 });
 
 app.use('/api/v1', router);
-
-app.use('/uploads', express.static(path.join(process.cwd(), 'uploads')));
 
 app.use(globalErrorHandler);
 
