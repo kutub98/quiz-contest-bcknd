@@ -1,4 +1,5 @@
-import { Router } from 'express';
+import express from 'express';
+
 import {
   createEvent,
   getEvents,
@@ -8,15 +9,14 @@ import {
   addParticipant,
   getEventWithParticipants,
 } from './event.controller';
+const router = express.Router();
 
-const EventRouter = Router();
+router.post('/', createEvent);
+router.get('/', getEvents);
+router.get('/:id', getEventById);
+router.get('/:id/participants', getEventWithParticipants);
+router.post('/add-participant', addParticipant);
+router.patch('/:id', updateEvent);
+router.delete('/:id', deleteEvent);
 
-EventRouter.post('/', createEvent);
-EventRouter.get('/', getEvents);
-EventRouter.get('/:id', getEventById);
-EventRouter.get('/:id/participants', getEventWithParticipants);
-EventRouter.post('/add-participant', addParticipant);
-EventRouter.patch('/:id', updateEvent);
-EventRouter.delete('/:id', deleteEvent);
-
-export { EventRouter };
+export const EventRouter = router;

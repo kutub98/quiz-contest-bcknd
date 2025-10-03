@@ -25,7 +25,6 @@ const moduleRoutes: TModuleRoutes[] = [
   { path: '/time-instruction', route: TimeInstructionRouter },
   { path: '/faq', route: FaQRouter },
   { path: '/auth', route: UserRoutes },
-
   { path: '/events', route: EventRouter },
   { path: '/quizzes', route: QuizRouter },
   { path: '/questions', route: QuestionRouter },
