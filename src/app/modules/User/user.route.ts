@@ -12,6 +12,16 @@ import {
   getAllUsersForAdmin,
   getUserDetailsWithParticipations,
 } from './user.controller';
+// import {
+// registerUser,
+// loginUser,
+// logoutUser,
+// getUserProfile,
+// updateUserProfile,
+// checkUserExists,
+// getAllUsersForAdmin,
+// getUserDetailsWithParticipations,
+// } from './user.controller';
 
 const router = Router();
 
