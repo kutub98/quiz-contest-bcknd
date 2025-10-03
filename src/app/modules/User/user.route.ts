@@ -1,5 +1,7 @@
 // D:\PersonalClientWork\quiz-contest\quiz-contest-bcknd\src\app\modules\User\user.route.ts
 import { Router } from 'express';
+import { authenticate, requireRole } from '../../middleware/auth.middleware';
+import upload from '../../config/multer';
 import {
   registerUser,
   loginUser,
@@ -10,8 +12,6 @@ import {
   getAllUsersForAdmin,
   getUserDetailsWithParticipations,
 } from './user.controller';
-import { authenticate, requireRole } from '../../middleware/auth.middleware';
-import upload from '../../config/multer';
 
 const router = Router();
 
