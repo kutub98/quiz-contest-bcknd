@@ -50,8 +50,10 @@ const getAllOffers = catchAsync(async (req, res) => {
 
 const updateOfferById = catchAsync(async (req, res) => {
   const { id } = req.params;
+  console.log(id, 'controller id');
 
   const payload = req.body;
+  console.log(payload, 'payload');
 
   const result = await ServiceOfOffer.updateOfferById(id, payload);
 

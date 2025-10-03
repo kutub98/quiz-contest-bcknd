@@ -9,7 +9,7 @@ import { EventRouter } from '../modules/events/event.route';
 import { QuizRouter } from '../modules/quiz/quiz.route';
 import { QuestionRouter } from '../modules/questions/questions.route';
 import { ParticipationRouter } from '../modules/Participation/participation.route';
-import { MessagingRouter } from '../modules/Messaging/messaging.route';
+import { QuizDataRouter } from '../modules/quizData/quizData.route';
 
 type TModuleRoutes = {
   path: string;
@@ -25,12 +25,14 @@ const moduleRoutes: TModuleRoutes[] = [
   { path: '/time-instruction', route: TimeInstructionRouter },
   { path: '/faq', route: FaQRouter },
   { path: '/auth', route: UserRoutes },
-
+  {
+    path: '/quiz-data',
+    route: QuizDataRouter,
+  },
   { path: '/events', route: EventRouter },
   { path: '/quizzes', route: QuizRouter },
   { path: '/questions', route: QuestionRouter },
   { path: '/participations', route: ParticipationRouter },
-  { path: '/messaging', route: MessagingRouter },
 ];
 
 moduleRoutes.forEach((route) => router.use(route.path, route.route));

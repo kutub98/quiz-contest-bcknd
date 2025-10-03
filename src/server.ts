@@ -1,38 +1,42 @@
+import { Server } from 'http';
 import mongoose from 'mongoose';
 import app from './app';
 import config from './app/config';
 
-// Connect to MongoDB only if DATABASE_URL is available
-if (config.database_url) {
-  mongoose
-    .connect(config.database_url as string)
-    .then(() => {
-      console.log('Database connected successfully');
-    })
-    .catch((err) => {
-      console.error('Failed to connect to database:', err);
-    });
-} else {
-  console.log('No DATABASE_URL provided, skipping database connection');
-}
+let server: Server;
 
-// Start server (skip in Vercel production)
-if (!process.env.VERCEL) {
-  const PORT = config.port || 5000;
+async function main() {
   try {
-    app.listen(PORT, () => {
-      console.log(`🚀 Server is running on port ${PORT}`);
-      console.log(`📱 API URL: http://localhost:${PORT}`);
-      console.log(`🏥 Health Check: http://localhost:${PORT}/health`);
+    // Connect to MongoDB
+    await mongoose.connect(config.database_url as string);
+    console.log('✅ Database connected successfully');
+    
+    // Start server
+    server = app.listen(config.port, () => {
+      console.log(`🚀 Server is running on port ${config.port}`);
     });
-  } catch (error) {
-    console.error('Failed to start server:', error);
+  } catch (err) {
+    console.error('❌ Failed to connect to database:', err);
+    process.exit(1);
   }
 }
 
-// Export the app for Vercel
-export default app;
+main();
 
-process.on('unhandledRejection', (reason, promise) => {
-  console.error('Unhandled Rejection at:', promise, 'reason:', reason);
+// Handle unhandled promise rejections
+process.on('unhandledRejection', (err) => {
+  console.error('😈 Unhandled Rejection detected, shutting down...', err);
+  if (server) {
+    server.close(() => {
+      process.exit(1);
+    });
+  } else {
+    process.exit(1);
+  }
+});
+
+// Handle uncaught exceptions
+process.on('uncaughtException', (err) => {
+  console.error('😈 Uncaught Exception detected, shutting down...', err);
+  process.exit(1);
 });

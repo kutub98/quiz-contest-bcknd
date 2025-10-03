@@ -50,6 +50,7 @@ const getAllOffers = async () => {
 // };
 
 const updateOfferById = async (_id: string, payload: Partial<IOffer>) => {
+  console.log(payload, 'payloads');
   const result = await Offer.findByIdAndUpdate(_id, payload, {
     new: true,
     runValidators: true,
