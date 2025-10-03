@@ -9,7 +9,7 @@ import { QuizRouter } from '../modules/quiz/quiz.route';
 import { QuestionRouter } from '../modules/questions/questions.route';
 import { ParticipationRouter } from '../modules/Participation/participation.route';
 import { MessagingRouter } from '../modules/Messaging/messaging.route';
-import { EventRouter } from '../modules/events/event.route';
+import { EventRouter } from '../modules/Events/event.route';
 
 type TModuleRoutes = {
   path: string;

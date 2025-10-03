@@ -1,5 +1,4 @@
 import express from 'express';
-
 import {
   createEvent,
   getEvents,
@@ -9,6 +8,16 @@ import {
   addParticipant,
   getEventWithParticipants,
 } from './event.controller';
+
+// import {
+// createEvent,
+// getEvents,
+// getEventById,
+// updateEvent,
+// deleteEvent,
+// addParticipant,
+// getEventWithParticipants,
+// } from './event.controller';
 const router = express.Router();
 
 router.post('/', createEvent);

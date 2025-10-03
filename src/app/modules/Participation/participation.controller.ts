@@ -2,7 +2,7 @@ import { Request, Response } from 'express';
 import { AuthRequest } from '../../middleware/auth.middleware';
 import { Participation } from './participation.model';
 import { questionImageUpload, getFileInfo } from '../../config/questionUpload';
-import { Event } from '../events/event.model';
+import { Event } from '../Events/event.model';
 
 export const createParticipation = async (req: Request, res: Response) => {
   try {
