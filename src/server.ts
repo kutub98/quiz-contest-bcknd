@@ -1,38 +1,36 @@
+import { Server } from 'http';
 import mongoose from 'mongoose';
 import app from './app';
 import config from './app/config';
 
-// Connect to MongoDB only if DATABASE_URL is available
-if (config.database_url) {
-  mongoose
-    .connect(config.database_url as string)
-    .then(() => {
-      console.log('Database connected successfully');
-    })
-    .catch((err) => {
-      console.error('Failed to connect to database:', err);
-    });
-} else {
-  console.log('No DATABASE_URL provided, skipping database connection');
-}
+let server: Server;
 
-// Start server (skip in Vercel production)
-if (!process.env.VERCEL) {
-  const PORT = config.port || 5000;
+function main() {
   try {
-    app.listen(PORT, () => {
-      console.log(`🚀 Server is running on port ${PORT}`);
-      console.log(`📱 API URL: http://localhost:${PORT}`);
-      console.log(`🏥 Health Check: http://localhost:${PORT}/health`);
+    
+    mongoose.connect(config.database_url as string);
+
+    server = app.listen(config.port, () => {
+      console.log(`app is listening on port ${config.port}`);
     });
-  } catch (error) {
-    console.error('Failed to start server:', error);
+  } catch (err) {
+    console.log(err);
   }
 }
 
-// Export the app for Vercel
-export default app;
+main();
 
-process.on('unhandledRejection', (reason, promise) => {
-  console.error('Unhandled Rejection at:', promise, 'reason:', reason);
+process.on('unhandledRejection', (err) => {
+  console.log(`😈 unahandledRejection is detected , shutting down ...`, err);
+  if (server) {
+    server.close(() => {
+      process.exit(1);
+    });
+  }
+  process.exit(1);
+});
+
+process.on('uncaughtException', () => {
+  console.log(`😈 uncaughtException is detected , shutting down ...`);
+  process.exit(1);
 });
